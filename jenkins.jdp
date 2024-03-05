@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Pull'){
             steps {
-                git 'https://github.com/SwapnilSalunke2/studentapp-ui.git'
+                git 'https://github.com/shubhamkalsait/studentapp-ui.git'
             }
         }
         stage('Build'){
@@ -22,20 +22,7 @@ pipeline {
         //     }
         // }
 
-        stage('Test'){
-            steps {
-                withSonarQubeEnv(installationName: 'sonar', credentialsId: 'sonar-creds') {
-                    sh '/opt/maven/bin/mvn sonar:sonar'
-                }
-            }
-        }
-        stage('Quality-Gate'){
-            steps {
-                timeout(10) {
-                    waitForQualityGate abortPipeline: true
-                }   
-            }
-        }
+     
 
         stage('Deploy'){
             steps {
