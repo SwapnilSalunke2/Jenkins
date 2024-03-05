@@ -21,12 +21,17 @@ pipeline {
         //         '''
         //     }
         // }
-    stage('Test')
-    {
-        withSonarQubeEnv(credentialsId: 'sonar-cred') {
-    // some block
-}
-    }
+         stage('Test'){
+            steps {
+                withSonarQubeEnv(installationName: 'sonar', credentials: 'sonar-cred') {
+                    sh '/opt/maven/bin/mvn sonar:sonar'
+                }
+            }
+        }
+
+
+        
+
 
      
 
