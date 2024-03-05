@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+    stages {
+        stage('Pull'){
+            steps {
+                git 'https://github.com/SwapnilSalunke2/studentapp-ui.git'
+            }
+        }
+        stage('Build'){
+            steps {
+                sh '/opt/maven/bin/mvn clean package'
+            }
+        }
+        // stage('Test'){
+        //     steps {
+        //         sh '''
+        //         mvn sonar:sonar \
+        //             -Dsonar.projectKey=cbz-erp \
+        //             -Dsonar.host.url=http://54.86.200.204:9000 \
+        //             -Dsonar.login=964c9d590817a87148a34d9ea92ff2a56d9051ae
+        //         '''
+        //     }
+        // }
+
+        stage('Test'){
+            steps {
+                withSonarQubeEnv(installationName: 'sonar', credentialsId: 'sonar-creds') {
+                    sh '/opt/maven/bin/mvn sonar:sonar'
+                }
+            }
+        }
+        stage('Quality-Gate'){
+            steps {
+                timeout(10) {
+                    waitForQualityGate abortPipeline: true
+                }   
+            }
+        }
+
+        stage('Deploy'){
+            steps {
+                echo 'Deploy Success'
+            }
+        }
+    }
+}
